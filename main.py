@@ -49,8 +49,8 @@ class SandwichMachine:
         for item, amount in ingredients.items():
             if self.machine_resources[item] < amount:
                 print(f"Sorry there is not enough {item}")
-                return false
-            return true
+                return False
+            return True
 
     def process_coins(self):
         """Returns the total calculated from coins inserted.
@@ -67,8 +67,9 @@ class SandwichMachine:
         """Return True when the payment is accepted, or False if money is insufficient.
         Hint: use the output of process_coins() function for cost input"""
         if coins >= cost:
-            coins - cost
-            print(f"Here is ${change} in change.")
+            change = round(coins - cost, 2)
+            if change > 0:
+                print(f"Here is ${change} in change.")
             return True
         else:
             print("Sorry thats not enough money, Your money has been refunded")
@@ -79,7 +80,7 @@ class SandwichMachine:
         Hint: no output"""
         for item, amount in order_ingredients.items():
             self.machine_resources[item] -= amount
-            print(f"{sandwhich_size} is ready. Bon Appetit!")
+        print(f"{sandwich_size} sandwich is ready. Bon Appetit!")
 
     def report(self):
         print(f"Bread: {self.machine_resources['bread']} slice(s)")
@@ -88,3 +89,27 @@ class SandwichMachine:
 
 
 ### Make an instance of SandwichMachine class and write the rest of the codes ###
+machine = SandwichMachine(resources)
+
+while True:
+    choice = input("What would you like? (small/ medium/ large/ off/ report): ").lower()
+
+    if choice == "off":
+        print("Turning off the machine.")
+        break
+    elif choice == "report":
+        machine.report()
+    elif choice in recipes:
+        sandwich = recipes[choice]
+        ingredients = sandwich["ingredients"]
+        cost = sandwich["cost"]
+        
+        if machine.check_resources(ingredients):
+            
+            inserted_coins = machine.process_coins()
+            
+            if machine.transaction_result(inserted_coins, cost):
+                machine.make_sandwich(choice, ingredients)
+                
+    else:
+        print("invalid option. Please choose small, medium, larg, off, or report.")
